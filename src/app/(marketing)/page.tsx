@@ -26,11 +26,11 @@ export default function HomePage() {
         </p>
         <div className="mt-10 space-x-3">
           <Button asChild>
-            <Link href="/app">Get started</Link>
+            <Link href="/signup">Get started</Link>
           </Button>
 
           <Button asChild variant="secondary">
-            <Link href="/signup">Log in</Link>
+            <Link href="/login">Log in</Link>
           </Button>
         </div>
       </section>
