@@ -11,9 +11,7 @@ export default function PetDetails() {
   return (
     <section className="flex flex-col h-full w-full">
       {!selectedPet ? (
-        <div className="h-full items-center justify-center flex">
-          <EmptyView />
-        </div>
+        <EmptyView />
       ) : (
         <>
           <TopBar pet={selectedPet} />
@@ -25,13 +23,21 @@ export default function PetDetails() {
   );
 }
 
+function EmptyView() {
+  return (
+    <div className="h-full items-center justify-center flex">
+      <p className="text-2xl font-medium">No pet selected</p>
+    </div>
+  );
+}
+
 type Props = {
   pet: TPetData;
 };
 
 function TopBar({ pet }: Props) {
   return (
-    <div className="flex items-center bg-white px-8 py-5 border-b border-black/[0.08]">
+    <div className="flex items-center bg-white px-8 py-5 border-b border-light">
       <Image
         src={pet?.imageUrl}
         alt="Selected pet image"
@@ -64,12 +70,8 @@ function OtherInfo({ pet }: Props) {
 
 function Notes({ pet }: Props) {
   return (
-    <section className="flex-1 border border-black/[0.08] bg-white px-7 py-5 rounded-md mb-9 mx-8">
+    <section className="flex-1 border border-light bg-white px-7 py-5 rounded-md mb-9 mx-8">
       {pet?.notes}
     </section>
   );
-}
-
-function EmptyView() {
-  return <p className="text-2xl font-medium">No pet selected</p>;
 }

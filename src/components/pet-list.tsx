@@ -11,7 +11,7 @@ export default function PetList() {
 
   console.log(pets);
   return (
-    <ul className="bg-white border-b border-black/[0.08]">
+    <ul className="bg-white border-b border-light">
       <li>
         {pets.map((pet) => (
           <button
