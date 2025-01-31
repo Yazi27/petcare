@@ -8,7 +8,7 @@ export default function HomePage() {
   return (
     <main className="bg-[#5DC9A8] min-h-screen flex flex-col xl:flex-row items-center justify-center gap-10">
       <Image
-        src="https://bytegrad.com/course-assets/react-nextjs/petsoft-preview.png"
+        src="/petsoft-preview.png"
         alt="Preview of Petsoft"
         width={519}
         height={472}
@@ -21,8 +21,8 @@ export default function HomePage() {
           ease
         </h1>
         <p className="text-2xl font-medium max-w-[600px]">
-          Use PetSoft to easily keep track of pets under your care. Get lifetime
-          access for $299.
+          With PetCare, managing your pet daycare has never been easier. Enjoy
+          lifetime access for just $20.
         </p>
         <div className="mt-10 space-x-3">
           <Button asChild>

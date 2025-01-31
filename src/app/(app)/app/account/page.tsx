@@ -5,7 +5,7 @@ import React from "react";
 export default function AccountPage() {
   return (
     <div className="h-full w-full">
-      <H1>Account</H1>
+      <H1 className="">Account</H1>
       <ContentBlock>
         <p>Logged in as ...</p>
       </ContentBlock>
