@@ -1,7 +1,6 @@
 "use client";
 
 import { usePetContext, useSearchContext } from "@/lib/hooks";
-import { TPetData } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import React from "react";

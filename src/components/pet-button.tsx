@@ -8,7 +8,6 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import PetForm from "./pet-form";
-import { act } from "react";
 
 type PetButtonProps = {
   actionType: "add" | "edit" | "checkout";
