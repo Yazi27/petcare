@@ -1,6 +1,8 @@
 "use client";
 
+import { addPet } from "@/actions/actions";
 import { TPetData } from "@/lib/types";
+import { revalidatePath } from "next/cache";
 import React, { createContext, useState } from "react";
 
 type TPetContext = {
@@ -32,14 +34,16 @@ export default function PetContextProvider({
   const selectedPet = pets.find((pet) => pet.id === selectedPetId);
   const numberOfPets = pets.length;
 
-  const handleAddPet = (newPet: Omit<TPetData, "id">) => {
-    setPets((prev) => [
-      ...prev,
-      {
-        ...newPet,
-        id: Date.now().toString(),
-      },
-    ]);
+  const handleAddPet = async (newPet: Omit<TPetData, "id">) => {
+    // setPets((prev) => [
+    //   ...prev,
+    //   {
+    //     ...newPet,
+    //     id: Date.now().toString(),
+    //   },
+    // ]);
+
+    await addPet(newPet);
   };
 
   // We don't need the id on the TPetData object, so we omit it
