@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
+import { addPet } from "@/actions/actions";
 
 type PetFormProps = {
   actionType: "add" | "edit";
@@ -40,7 +41,7 @@ export default function PetForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col">
+    <form action={addPet} className="flex flex-col">
       <div className="space-y-3">
         <div className="space-y-1">
           <Label htmlFor="name">Name</Label>
@@ -49,6 +50,7 @@ export default function PetForm({
             name="name"
             type="text"
             required
+            autoFocus
             defaultValue={actionType === "edit" ? selectedPet?.name : ""} // selected pet will never be undefined
           />
         </div>

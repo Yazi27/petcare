@@ -44,6 +44,7 @@ export default function PetButton({
           <Button variant="secondary">{children}</Button>
         )}
       </DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
