@@ -25,8 +25,7 @@ export default function PetForm({
     const modifiedPet = {
       name: formData.get("name") as string, // As string because required attribute is set
       ownerName: formData.get("ownerName") as string,
-      imageUrl:
-        (formData.get("imageUrl") as string) || "/add-pet-placeholder.png",
+      imageUrl: (formData.get("imageUrl") as string) || "/pet-placeholder.png",
       age: +(formData.get("age") as string), // Initially get as string, then convert to number
       notes: formData.get("notes") as string,
     };

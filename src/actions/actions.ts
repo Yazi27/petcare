@@ -8,7 +8,7 @@ export async function addPet(formData) {
       name: formData.get("name"),
       ownerName: formData.get("ownerName"),
       age: Number(formData.get("age")),
-      imageUrl: formData.get("imageUrl"),
+      imageUrl: formData.get("imageUrl" as string) || "/pet-placeholder.png",
       notes: formData.get("notes") as string,
     },
   });
