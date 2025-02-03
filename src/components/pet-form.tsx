@@ -15,13 +15,13 @@ export default function PetForm({
   actionType,
   onFormSubmission,
 }: PetFormProps) {
-  const { handleAddPet, selectedPet } = usePetContext();
+  const { handleAddPet, selectedPet, handleEditPet } = usePetContext();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const newPet = {
+    const modifiedPet = {
       name: formData.get("name") as string, // As string because required attribute is set
       ownerName: formData.get("ownerName") as string,
       imageUrl:
@@ -29,7 +29,12 @@ export default function PetForm({
       age: +(formData.get("age") as string), // Initially get as string, then convert to number
       notes: formData.get("notes") as string,
     };
-    handleAddPet(newPet);
+
+    if (actionType === "add") {
+      handleAddPet(modifiedPet);
+    } else if (actionType === "edit") {
+      handleEditPet(selectedPet!.id, modifiedPet);
+    }
 
     onFormSubmission();
   };
