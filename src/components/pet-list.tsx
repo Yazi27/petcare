@@ -13,7 +13,6 @@ export default function PetList() {
     pet.name.toLowerCase().includes(searchQuery)
   );
 
-  console.log(pets);
   return (
     <ul className="bg-white border-b border-light">
       <li>

@@ -22,6 +22,7 @@ export default function PetForm({
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
+
     const modifiedPet = {
       name: formData.get("name") as string, // As string because required attribute is set
       ownerName: formData.get("ownerName") as string,
