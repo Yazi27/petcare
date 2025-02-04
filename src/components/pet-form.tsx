@@ -6,6 +6,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { addPet } from "@/actions/actions";
+import PetFormBtn from "./pet-form-btn";
 
 type PetFormProps = {
   actionType: "add" | "edit";
@@ -113,9 +114,7 @@ export default function PetForm({
         </div>
       </div>
 
-      <Button type="submit" className="mt-5 py-[22px] rounded-md">
-        {actionType === "add" ? "Add pet" : "Save changes"}
-      </Button>
+      <PetFormBtn actionType={actionType} />
     </form>
   );
 }
