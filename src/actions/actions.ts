@@ -6,15 +6,20 @@ import { revalidatePath } from "next/cache";
 
 export async function addPet(formData) {
   await sleep(2000);
-  await prisma.pet.create({
-    data: {
-      name: formData.get("name"),
-      ownerName: formData.get("ownerName"),
-      age: Number(formData.get("age")),
-      imageUrl: formData.get("imageUrl" as string) || "/pet-placeholder.png",
-      notes: formData.get("notes") as string,
-    },
-  });
+
+  try {
+    await prisma.pet.create({
+      data: {
+        name: formData.get("name"),
+        ownerName: formData.get("ownerName"),
+        // age: Number(formData.get("age")),
+        imageUrl: formData.get("imageUrl" as string) || "/pet-placeholder.png",
+        notes: formData.get("notes") as string,
+      },
+    });
+  } catch (error) {
+    return { message: "Could not add pet" };
+  }
 
   revalidatePath("/app", "layout");
 }
