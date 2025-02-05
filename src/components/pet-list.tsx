@@ -15,8 +15,8 @@ export default function PetList() {
 
   return (
     <ul className="bg-white border-b border-light">
-      <li>
-        {filteredPets.map((pet) => (
+      {filteredPets.map((pet) => (
+        <li key={pet.id}>
           <button
             onClick={() => handleChangeSelectPetId(pet.id)}
             key={pet.id}
@@ -36,8 +36,8 @@ export default function PetList() {
             />
             <p className="font-semibold">{pet.name}</p>
           </button>
-        ))}
-      </li>
+        </li>
+      ))}
     </ul>
   );
 }

@@ -50,17 +50,13 @@ function TopBar({ pet }: Props) {
         className="h-[75px] w-[75px] rounded-full object-cover"
       />
 
-      <h2 className="text-3xl font-semibold leading-7 ml-5">{pet?.name}</h2>
+      <h2 className="text-3xl font-semibold leading-7 ml-5">{pet.name}</h2>
       <div className="ml-auto space-x-2">
         <PetButton actionType="edit">Edit</PetButton>
         <PetButton
           actionType="checkout"
           disabled={isPending}
-          onClick={async () =>
-            startTransition(async () => {
-              await deletePet(pet?.id);
-            })
-          }
+          onClick={async () => await handleCheckoutPet(pet.id)}
         >
           Checkout
         </PetButton>

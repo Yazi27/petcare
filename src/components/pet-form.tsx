@@ -37,27 +37,29 @@ export default function PetForm({
     } else if (actionType === "edit") {
       handleEditPet(selectedPet!.id, modifiedPet);
     }
-
-    onFormSubmission();
   };
 
   return (
     <form
       action={async (formData) => {
-        if (actionType === "add") {
-          const error = await addPet(formData);
-          if (error) {
-            toast.warning(error.message);
-            return;
-          }
-        } else if (actionType === "edit") {
-          const error = await editPet(selectedPet?.id, formData);
-          if (error) {
-            toast.warning(error.message);
-            return;
-          }
-        }
+        // We make our own object without the id
+
+        const petData = {
+          name: formData.get("name") as string,
+          ownerName: formData.get("ownerName") as string,
+          imageUrl:
+            (formData.get("imageUrl") as string) || "/pet-placeholder.png", // Since it can be empty
+          age: +(formData.get("age") as string),
+          notes: formData.get("notes") as string,
+        };
+
         onFormSubmission();
+
+        if (actionType === "add") {
+          await handleAddPet(petData);
+        } else if (actionType === "edit") {
+          await handleEditPet(selectedPet!.id, petData);
+        }
       }}
       className="flex flex-col"
     >
