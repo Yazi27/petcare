@@ -19,6 +19,8 @@ export default function PetForm({
 }: PetFormProps) {
   const { handleAddPet, selectedPet, handleEditPet } = usePetContext();
 
+  // This is not even used anymore because we are using action instead
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
