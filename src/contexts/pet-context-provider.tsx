@@ -31,21 +31,27 @@ export default function PetContextProvider({
   children,
   data,
 }: PetContextProviderProps) {
-  //
   // State ---------------------------------------------------------------------
 
   const [optimisticPets, setOptimisticPets] = useOptimistic(
     data,
-    (state, newPet) => {
-      return [
-        ...state,
-        {
-          ...newPet,
-          id: Math.random().toString(),
-        },
-      ];
+    // We destructure immediately the action and payload to avoid having to type the object
+    (state, { action, payload }) => {
+      switch (action) {
+        case "add":
+          return [...state, { ...payload, id: Math.random().toString() }];
+        case "edit":
+          return state.map((pet) =>
+            pet.id === payload.id ? { ...pet, ...payload } : pet
+          );
+        case "delete":
+          return state.filter((pet) => pet.id !== payload);
+        default:
+          return state;
+      }
     }
   );
+
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
 
   // Derived state ------------------------------------------------------------
@@ -56,7 +62,10 @@ export default function PetContextProvider({
   // Event handlers -----------------------------------------------------------
 
   const handleAddPet = async (newPet: Omit<TPetData, "id">) => {
-    setOptimisticPets(newPet);
+    setOptimisticPets({
+      action: "add",
+      payload: newPet,
+    });
     const error = await addPet(newPet);
     if (error) {
       toast.warning(error.message);
@@ -69,6 +78,10 @@ export default function PetContextProvider({
     petId: string,
     newPetData: Omit<TPetData, "id">
   ) => {
+    setOptimisticPets({
+      action: "edit",
+      payload: { id: petId, ...newPetData },
+    });
     const error = await editPet(petId, newPetData);
     if (error) {
       toast.warning(error.message);
@@ -77,6 +90,10 @@ export default function PetContextProvider({
   };
 
   const handleCheckoutPet = async (petId: string | null) => {
+    setOptimisticPets({
+      action: "delete",
+      payload: petId,
+    });
     await deletePet(petId);
     setSelectedPetId(null);
   };
