@@ -4,9 +4,7 @@ import { usePetContext } from "@/lib/hooks";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-import { addPet, editPet } from "@/actions/actions";
 import PetFormBtn from "./pet-form-btn";
-import { toast } from "sonner";
 
 type PetFormProps = {
   actionType: "add" | "edit";
@@ -21,25 +19,25 @@ export default function PetForm({
 
   // This is not even used anymore because we are using action instead
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
+  //   const formData = new FormData(e.currentTarget);
 
-    const modifiedPet = {
-      name: formData.get("name") as string, // As string because required attribute is set
-      ownerName: formData.get("ownerName") as string,
-      imageUrl: (formData.get("imageUrl") as string) || "/pet-placeholder.png",
-      age: +(formData.get("age") as string), // Initially get as string, then convert to number
-      notes: formData.get("notes") as string,
-    };
+  //   const modifiedPet = {
+  //     name: formData.get("name") as string, // As string because required attribute is set
+  //     ownerName: formData.get("ownerName") as string,
+  //     imageUrl: (formData.get("imageUrl") as string) || "/pet-placeholder.png",
+  //     age: +(formData.get("age") as string), // Initially get as string, then convert to number
+  //     notes: formData.get("notes") as string,
+  //   };
 
-    if (actionType === "add") {
-      handleAddPet(modifiedPet);
-    } else if (actionType === "edit") {
-      handleEditPet(selectedPet!.id, modifiedPet);
-    }
-  };
+  //   if (actionType === "add") {
+  //     handleAddPet(modifiedPet);
+  //   } else if (actionType === "edit") {
+  //     handleEditPet(selectedPet!.id, modifiedPet);
+  //   }
+  // };
 
   return (
     <form
