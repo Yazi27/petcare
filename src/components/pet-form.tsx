@@ -5,40 +5,37 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import PetFormBtn from "./pet-form-btn";
+import { useForm } from "react-hook-form";
 
 type PetFormProps = {
   actionType: "add" | "edit";
   onFormSubmission: () => void;
 };
 
+type TPetForm = {
+  name: string;
+  ownerName: string;
+  imageUrl: string;
+  age: string;
+  notes: string;
+};
+
 export default function PetForm({
   actionType,
   onFormSubmission,
 }: PetFormProps) {
+  // ++++++++++++++++++++++++++++++++ CONTEXT HOOK ++++++++++++++++++++++++++++++++ //
+
   const { handleAddPet, selectedPet, handleEditPet } = usePetContext();
 
-  // This is not even used anymore because we are using action instead
+  // ++++++++++++++++++++++++++++++++ FORM VALIDATION HOOK ++++++++++++++++++++++++++++++++ //
 
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
+  const {
+    register,
+    formState: { errors },
+  } = useForm<TPetForm>();
 
-  //   const formData = new FormData(e.currentTarget);
-
-  //   const modifiedPet = {
-  //     name: formData.get("name") as string, // As string because required attribute is set
-  //     ownerName: formData.get("ownerName") as string,
-  //     imageUrl: (formData.get("imageUrl") as string) || "/pet-placeholder.png",
-  //     age: +(formData.get("age") as string), // Initially get as string, then convert to number
-  //     notes: formData.get("notes") as string,
-  //   };
-
-  //   if (actionType === "add") {
-  //     handleAddPet(modifiedPet);
-  //   } else if (actionType === "edit") {
-  //     handleEditPet(selectedPet!.id, modifiedPet);
-  //   }
-  // };
-
+  // ++++++++++++++++++++++++++++++++ RENDER ++++++++++++++++++++++++++++++++ //
   return (
     <form
       action={async (formData) => {
@@ -66,27 +63,16 @@ export default function PetForm({
       <div className="space-y-3">
         <div className="space-y-1">
           <Label htmlFor="name">Name</Label>
-          <Input
-            id="name"
-            name="name"
-            type="text"
-            required
-            autoFocus
-            defaultValue={actionType === "edit" ? selectedPet?.name : ""} // selected pet will never be undefined
-          />
+          <Input id="name" {...register("name")} />
+          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
         </div>
 
         <div className="space-y-1">
           <Label htmlFor="ownerName">Owner Name</Label>
-          <Input
-            id="ownerName"
-            name="ownerName"
-            type="text"
-            required
-            defaultValue={
-              actionType === "edit" ? selectedPet?.ownerName : "" // selected pet will never be undefined
-            }
-          />
+          <Input id="ownerName" {...register("ownerName")} />
+          {errors.ownerName && (
+            <p className="text-red-500">{errors.ownerName.message}</p>
+          )}
         </div>
 
         <div className="space-y-1">
@@ -99,6 +85,9 @@ export default function PetForm({
               actionType === "edit" ? selectedPet?.imageUrl : "" // selected pet will never be undefined
             }
           />
+          {errors.imageUrl && (
+            <p className="text-red-500">{errors.imageUrl.message}</p>
+          )}
         </div>
 
         <div className="space-y-1">
@@ -112,6 +101,7 @@ export default function PetForm({
               actionType === "edit" ? selectedPet?.age : "" // selected pet will never be undefined
             }
           />
+          {errors.age && <p className="text-red-500">{errors.age.message}</p>}
         </div>
 
         <div className="space-y-1">
@@ -125,10 +115,20 @@ export default function PetForm({
               actionType === "edit" ? selectedPet?.notes : "" // selected pet will never be undefined
             }
           />
+          {errors.notes && (
+            <p className="text-red-500">{errors.notes.message}</p>
+          )}
         </div>
       </div>
 
       <PetFormBtn actionType={actionType} />
     </form>
   );
+}
+
+{
+  {
+    {
+    }
+  }
 }
