@@ -32,6 +32,7 @@ export default function PetForm({
 
   const {
     register,
+    trigger,
     formState: { errors },
   } = useForm<TPetForm>();
 
@@ -39,8 +40,10 @@ export default function PetForm({
   return (
     <form
       action={async (formData) => {
-        // We make our own object without the id
+        const result = await trigger();
+        if (!result) return;
 
+        // We make our own object without the id
         const petData = {
           name: formData.get("name") as string,
           ownerName: formData.get("ownerName") as string,
@@ -63,60 +66,58 @@ export default function PetForm({
       <div className="space-y-3">
         <div className="space-y-1">
           <Label htmlFor="name">Name</Label>
-          <Input id="name" {...register("name")} />
-          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+          <Input
+            id="name"
+            {...register("name", {
+              required: "Name is required",
+              minLength: {
+                value: 3,
+                message: "Name must be at least 3 characters long",
+              },
+            })}
+          />
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
+          )}
         </div>
 
         <div className="space-y-1">
           <Label htmlFor="ownerName">Owner Name</Label>
-          <Input id="ownerName" {...register("ownerName")} />
+          <Input
+            id="ownerName"
+            {...register("ownerName", {
+              maxLength: {
+                value: 10,
+                message: "Owner Name must be at most 10 characters long",
+              },
+            })}
+          />
           {errors.ownerName && (
-            <p className="text-red-500">{errors.ownerName.message}</p>
+            <p className="text-red-500 text-sm">{errors.ownerName.message}</p>
           )}
         </div>
 
         <div className="space-y-1">
           <Label htmlFor="imageUrl">Image Url</Label>
-          <Input
-            id="imageUrl"
-            name="imageUrl"
-            type="text"
-            defaultValue={
-              actionType === "edit" ? selectedPet?.imageUrl : "" // selected pet will never be undefined
-            }
-          />
+          <Input id="imageUrl" {...register("imageUrl")} />
           {errors.imageUrl && (
-            <p className="text-red-500">{errors.imageUrl.message}</p>
+            <p className="text-red-500 text-sm">{errors.imageUrl.message}</p>
           )}
         </div>
 
         <div className="space-y-1">
           <Label htmlFor="age">Age</Label>
-          <Input
-            id="age"
-            name="age"
-            type="number"
-            required
-            defaultValue={
-              actionType === "edit" ? selectedPet?.age : "" // selected pet will never be undefined
-            }
-          />
-          {errors.age && <p className="text-red-500">{errors.age.message}</p>}
+          <Input id="age" {...register("age")} />
+          {errors.age && (
+            <p className="text-red-500 text-sm">{errors.age.message}</p>
+          )}
         </div>
 
         <div className="space-y-1">
           <Label htmlFor="notes">Notes</Label>
-          <Textarea
-            id="notes"
-            name="notes"
-            rows={4}
-            required
-            defaultValue={
-              actionType === "edit" ? selectedPet?.notes : "" // selected pet will never be undefined
-            }
-          />
+          <Textarea id="notes" {...register("notes")} />
           {errors.notes && (
-            <p className="text-red-500">{errors.notes.message}</p>
+            <p className="text-red-500 text-sm">{errors.notes.message}</p>
           )}
         </div>
       </div>

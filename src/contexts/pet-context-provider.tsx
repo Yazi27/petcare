@@ -7,9 +7,9 @@ import React, { createContext, useOptimistic, useState } from "react";
 import { toast } from "sonner";
 
 type TPetContext = {
-  pets: Pet[];
+  pets: PetState[];
   selectedPetId: Pet["id"] | null;
-  selectedPet: Pet | undefined;
+  selectedPet: Pet | OptimisticPet | undefined;
   numberOfPets: number;
   handleCheckoutPet: (id: Pet["id"]) => Promise<void>;
   handleAddPet: (newPet: PetEssentials) => Promise<void>;
@@ -22,31 +22,63 @@ type PetContextProviderProps = {
   data: Pet[];
 };
 
+// ++++++++++++++++++++++++++++++++ ACTION TYPE REQUIREMENTS ++++++++++++++++++++++++++++++++ //
+
+type AddAction = {
+  action: "add";
+  payload: PetEssentials;
+  id: string;
+};
+
+type EditAction = {
+  action: "edit";
+  payload: PetEssentials & { id: string };
+};
+
+type DeleteAction = {
+  action: "delete";
+  payload: string;
+};
+
+type OptimisticAction = AddAction | EditAction | DeleteAction;
+
+// ++++++++++++++++++++++++++++++++ DEFINE OPTIMISTIC STATE ++++++++++++++++++++++++++++++++ //
+
+type OptimisticPet = PetEssentials & { id: string };
+
+type PetState = Pet | OptimisticPet;
+
 export const PetContext = createContext<TPetContext | null>(null);
 
 export default function PetContextProvider({
   children,
   data,
 }: PetContextProviderProps) {
-  console.log("rendering");
-  // State ---------------------------------------------------------------------
+  // ++++++++++++++++++++++++++++++++ OPTIMISTIC STATE ++++++++++++++++++++++++++++++++ //
 
   const [optimisticPets, setOptimisticPets] = useOptimistic(
     data,
-    // We destructure immediately the action and payload to avoid having to type the object
-    (state, { action, payload }) => {
-      console.log("Rendering optimisticPets");
-      switch (action) {
-        case "add":
-          const newPet = { ...payload, id: Date.now().toString() };
-          console.log(newPet);
+
+    // ++++++++++++++++++++++++++++++++ REDUCER ++++++++++++++++++++++++++++++++ //
+
+    /**
+     * @brief Optimistic reducer for pets, id is required so that the reducer is pure and id stays stable upon rerenders
+     * @param state Contains server data (Pet[]) and optimistic data (OptimisticPet[])
+     * @param action Can be "add", "edit" or "delete", id is only required for "add"
+     * @returns New state
+     */
+    (state: PetState[], action: OptimisticAction) => {
+      switch (action.action) {
+        case "add": {
+          const newPet = { ...action.payload, id: action.id };
           return [...state, newPet];
+        }
         case "edit":
           return state.map((pet) =>
-            pet.id === payload.id ? { ...pet, ...payload } : pet
+            pet.id === action.payload.id ? { ...pet, ...action.payload } : pet
           );
         case "delete":
-          return state.filter((pet) => pet.id !== payload);
+          return state.filter((pet) => pet.id !== action.payload);
         default:
           return state;
       }
@@ -72,6 +104,7 @@ export default function PetContextProvider({
     setOptimisticPets({
       action: "add",
       payload: newPet,
+      id: Date.now().toString(),
     });
     const error = await addPet(newPet);
     if (error) {
