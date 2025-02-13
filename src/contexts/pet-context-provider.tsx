@@ -50,6 +50,35 @@ type PetState = Pet | OptimisticPet;
 
 export const PetContext = createContext<TPetContext | null>(null);
 
+// ++++++++++++++++++++++++++++++++ REDUCER ++++++++++++++++++++++++++++++++ //
+
+/**
+ * @brief Optimistic reducer for pets, id is required so that the reducer is pure and id stays stable upon rerenders
+ * @param state Contains server data (Pet[]) and optimistic data (OptimisticPet[])
+ * @param action Can be "add", "edit" or "delete", id is only required for "add"
+ * @returns New state
+ */
+const optimisticPetsReducer = (
+  state: PetState[],
+  action: OptimisticAction
+): PetState[] => {
+  switch (action.action) {
+    case "add": {
+      // Create an optimistic pet with a stable id.
+      const newPet = { ...action.payload, id: action.id };
+      return [...state, newPet];
+    }
+    case "edit":
+      return state.map((pet) =>
+        pet.id === action.payload.id ? { ...pet, ...action.payload } : pet
+      );
+    case "delete":
+      return state.filter((pet) => pet.id !== action.payload);
+    default:
+      return state;
+  }
+};
+
 export default function PetContextProvider({
   children,
   data,
@@ -58,44 +87,14 @@ export default function PetContextProvider({
 
   const [optimisticPets, setOptimisticPets] = useOptimistic(
     data,
-
-    // ++++++++++++++++++++++++++++++++ REDUCER ++++++++++++++++++++++++++++++++ //
-
-    /**
-     * @brief Optimistic reducer for pets, id is required so that the reducer is pure and id stays stable upon rerenders
-     * @param state Contains server data (Pet[]) and optimistic data (OptimisticPet[])
-     * @param action Can be "add", "edit" or "delete", id is only required for "add"
-     * @returns New state
-     */
-    (state: PetState[], action: OptimisticAction) => {
-      switch (action.action) {
-        case "add": {
-          const newPet = { ...action.payload, id: action.id };
-          return [...state, newPet];
-        }
-        case "edit":
-          return state.map((pet) =>
-            pet.id === action.payload.id ? { ...pet, ...action.payload } : pet
-          );
-        case "delete":
-          return state.filter((pet) => pet.id !== action.payload);
-        default:
-          return state;
-      }
-    }
+    optimisticPetsReducer
   );
 
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
-  console.log(selectedPetId);
 
   // Derived state ------------------------------------------------------------
 
   const selectedPet = optimisticPets.find((pet) => pet.id === selectedPetId);
-  if (selectedPet) {
-    console.log("Pet found:", selectedPet);
-  } else {
-    console.log("Pet not found");
-  }
   const numberOfPets = optimisticPets.length;
 
   // Event handlers -----------------------------------------------------------
@@ -139,7 +138,6 @@ export default function PetContextProvider({
   };
 
   const handleChangeSelectPetId = (id: Pet["id"]) => {
-    console.log("Selected pet id:", id);
     setSelectedPetId(id);
   };
 
