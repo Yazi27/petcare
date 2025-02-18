@@ -32,13 +32,21 @@ export default function PetForm({
     formState: { errors },
   } = useForm<TPetForm>({
     resolver: zodResolver(petFormSchema),
+    defaultValues: {
+      name: selectedPet?.name,
+      ownerName: selectedPet?.ownerName,
+      imageUrl: selectedPet?.imageUrl,
+      age: selectedPet?.age,
+      notes: selectedPet?.notes,
+    },
   });
 
   // ++++++++++++++++++++++++++++++++ RENDER ++++++++++++++++++++++++++++++++ //
+
   return (
     <form
-      // raw formData, non validated
-      action={async (formData) => {
+      // raw formData, non validated, we don't need it anymore
+      action={async () => {
         // We validate the data with the resolver
         const result = await trigger();
         if (!result) return;
