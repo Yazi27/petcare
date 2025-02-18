@@ -7,9 +7,10 @@ import { PetEssentials } from "@/lib/types";
 import { Pet } from "@prisma/client";
 import { petFormSchema } from "@/lib/validations";
 
-export async function addPet(pet: PetEssentials) {
+export async function addPet(pet: unknown) {
   await sleep(1000);
 
+  console.log(pet);
   // We can use parse instead and wrap it in a try catch block
   const validatedPet = petFormSchema.safeParse(pet);
   if (!validatedPet.success) {
