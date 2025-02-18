@@ -5,13 +5,20 @@ import { sleep } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 import { PetEssentials } from "@/lib/types";
 import { Pet } from "@prisma/client";
+import { petFormSchema } from "@/lib/validations";
 
 export async function addPet(pet: PetEssentials) {
   await sleep(1000);
 
+  // We can use parse instead and wrap it in a try catch block
+  const validatedPet = petFormSchema.safeParse(pet);
+  if (!validatedPet.success) {
+    return { message: "Invalid pet data" };
+  }
+
   try {
     await prisma.pet.create({
-      data: pet,
+      data: validatedPet.data,
     });
   } catch (error) {
     return { message: "Could not add pet" };
