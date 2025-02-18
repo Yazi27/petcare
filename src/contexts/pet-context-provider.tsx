@@ -79,6 +79,8 @@ const optimisticPetsReducer = (
   }
 };
 
+// ####################################### CONTEXT PROVIDER COMPONENT ############################################## //
+
 export default function PetContextProvider({
   children,
   data,
