@@ -8,26 +8,35 @@ import PetFormBtn from "./pet-form-btn";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { DEFAULT_PET_IMAGE } from "@/lib/constants";
 
 type PetFormProps = {
   actionType: "add" | "edit";
   onFormSubmission: () => void;
 };
 
-const petFormSchema = z.object({
-  name: z.string().trim().min(1, { message: "Name is required" }).max(100),
-  ownerName: z
-    .string()
-    .trim()
-    .min(1, { message: "Owner Name is required" })
-    .max(100),
-  imageUrl: z.union([
-    z.literal(""),
-    z.string().trim().url({ message: "Image must be an URL" }),
-  ]),
-  age: z.coerce.number().int().positive().max(99999),
-  notes: z.union([z.literal(""), z.string().trim().max(1000)]),
-});
+const petFormSchema = z
+  .object({
+    name: z.string().trim().min(1, { message: "Name is required" }).max(100),
+    ownerName: z
+      .string()
+      .trim()
+      .min(1, { message: "Owner Name is required" })
+      .max(100),
+    imageUrl: z.union([
+      z.literal(""),
+      z.string().trim().url({ message: "Image must be an URL" }),
+    ]),
+    age: z.coerce.number().int().positive().max(99999),
+    notes: z.union([z.literal(""), z.string().trim().max(1000)]),
+  })
+
+  // We should then check if the object returned from the form has an imageUrl property
+  // Else we should set it to placeholder
+  .transform((data) => ({
+    ...data,
+    imageUrl: data.imageUrl || DEFAULT_PET_IMAGE,
+  }));
 
 type TPetForm = z.infer<typeof petFormSchema>;
 
@@ -44,6 +53,7 @@ export default function PetForm({
   const {
     register,
     trigger,
+    getValues,
     formState: { errors },
   } = useForm<TPetForm>({
     resolver: zodResolver(petFormSchema),
@@ -52,19 +62,18 @@ export default function PetForm({
   // ++++++++++++++++++++++++++++++++ RENDER ++++++++++++++++++++++++++++++++ //
   return (
     <form
+      // raw formData, non validated
       action={async (formData) => {
+        // We validate the data with the resolver
         const result = await trigger();
         if (!result) return;
 
-        // We make our own object without the id
-        const petData = {
-          name: formData.get("name") as string,
-          ownerName: formData.get("ownerName") as string,
-          imageUrl:
-            (formData.get("imageUrl") as string) || "/pet-placeholder.png", // Since it can be empty
-          age: +(formData.get("age") as string),
-          notes: formData.get("notes") as string,
-        };
+        // The data we get here is still raw, we simply validated it, but we did not modify it
+        // zod.transforms will not be applied to our raw data
+        const petData = getValues();
+
+        // So we have to manually do it ourselves or apply parse to it
+        petData.imageUrl = petData.imageUrl || DEFAULT_PET_IMAGE;
 
         onFormSubmission();
 
@@ -138,11 +147,4 @@ export default function PetForm({
       <PetFormBtn actionType={actionType} />
     </form>
   );
-}
-
-{
-  {
-    {
-    }
-  }
 }

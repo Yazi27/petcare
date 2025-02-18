@@ -7,7 +7,7 @@ import { PetEssentials } from "@/lib/types";
 import { Pet } from "@prisma/client";
 
 export async function addPet(pet: PetEssentials) {
-  await sleep(4000);
+  await sleep(1000);
 
   try {
     await prisma.pet.create({
